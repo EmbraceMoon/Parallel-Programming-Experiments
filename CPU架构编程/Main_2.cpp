@@ -3,10 +3,10 @@
 using namespace std;
 
 const int N = 4096;
-int a[N];
+int a[N], b[N];
 void init() {
 	for (int i = 0;i < N;i++)
-		a[i] = i * i + 2 * i;
+		a[i] = 2 * i;
 }
 
 int normal() {
@@ -27,18 +27,16 @@ int muti_link() {
 	return sum1 + sum2 + sum3 + sum4;
 }
 
-int rec(int p, int q) {
-	if (p == q) return a[p];
-	return rec(p, (p + q) / 2) + rec(((p + q) / 2) + 1, q);
-}
-
 int recursion() {
-	return rec(0, N - 1);
+	for (int m = N; m > 1; m /= 2)
+		for (int i = 0; i < m / 2; i++)
+			b[i] = b[i * 2] + b[i * 2 + 1];
+	return b[0];
 }
 
 int main() {
-	long long head, tail, freq;
-	int M = 4000;
+	long long head, tail, freq, count = 0;
+	int M = 4500;
 	init();
 
 	QueryPerformanceFrequency((LARGE_INTEGER*) &freq);
@@ -53,8 +51,17 @@ int main() {
 	cout << "Muti-link Col: " << (tail - head) * 1000.0 / freq << "ms" << endl;
 
 	QueryPerformanceCounter((LARGE_INTEGER*) &head);
-	for (int i = 0;i < M;i++) recursion();
+	memcpy(b, a, sizeof(a));
 	QueryPerformanceCounter((LARGE_INTEGER*) &tail);
-	cout << "Recursion Col: " << (tail - head) * 1000.0 / freq << "ms" << endl;
+	long long redundancy = tail - head;
+
+	for (int i = 0;i < M;i++) {
+		memcpy(b, a, sizeof(a));
+		QueryPerformanceCounter((LARGE_INTEGER*) &head);
+		recursion();
+		QueryPerformanceCounter((LARGE_INTEGER*) &tail);
+		count += tail - head;
+	}
+	cout << "Recursion Col: " << count * 1000.0 / freq << "ms" << endl;
 	return 0;
 }
