@@ -16,7 +16,7 @@ int normal() {
 	return sum;
 }
 
-int muti_link() {
+int multi_link() {
 	int sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0;
 	for (int i = 0;i < N;i += 4) {
 		sum1 += a[i];
@@ -46,14 +46,9 @@ int main() {
 	cout << "Normal Col: " << (tail - head) * 1000.0 / freq << "ms" << endl;
 
 	QueryPerformanceCounter((LARGE_INTEGER*) &head);
-	for (int i = 0;i < M;i++) muti_link();
+	for (int i = 0;i < M;i++) multi_link();
 	QueryPerformanceCounter((LARGE_INTEGER*) &tail);
-	cout << "Muti-link Col: " << (tail - head) * 1000.0 / freq << "ms" << endl;
-
-	QueryPerformanceCounter((LARGE_INTEGER*) &head);
-	memcpy(b, a, sizeof(a));
-	QueryPerformanceCounter((LARGE_INTEGER*) &tail);
-	long long redundancy = tail - head;
+	cout << "Multi-link Col: " << (tail - head) * 1000.0 / freq << "ms" << endl;
 
 	for (int i = 0;i < M;i++) {
 		memcpy(b, a, sizeof(a));
